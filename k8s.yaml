@@ -1,0 +1,83 @@
+apiVersion: v1
+items:
+  - apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: "{{ microservice.name }}"
+        hasuraService: custom
+      name: "{{ microservice.name }}"
+      namespace: "{{ cluster.metadata.namespaces.user }}"
+    spec:
+      replicas: 1
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: "{{ microservice.name }}"
+        spec:
+          containers:
+            - image: hasura/base-git-image:0.7
+              imagePullPolicy: IfNotPresent
+              name: "{{ microservice.name }}"
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: postgres.user
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: postgres.password
+                - name: WX_MP_APPID
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: wx.mp.appid
+                - name: WX_MP_APPSECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: wx.mp.appsecret
+                - name: WX_PAY_MCHID
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: wx.pay.mchid
+                - name: WX_PAY_APIKEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: hasura-secrets
+                      key: wx.pay.apikey
+              resources: {}
+          securityContext: {}
+          terminationGracePeriodSeconds: 0
+    status: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: "{{ microservice.name }}"
+        hasuraService: custom
+      name: "{{ microservice.name }}"
+      namespace: "{{ cluster.metadata.namespaces.user }}"
+    spec:
+      ports:
+        - port: 80
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        app: "{{ microservice.name }}"
+      type: ClusterIP
+    status:
+      loadBalancer: {}
+kind: List
+metadata: {}

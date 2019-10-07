@@ -1,0 +1,16 @@
+github.com/chanxuehong/internal v0.0.0-20180430074813-85d6017afbc4 h1:oIVeDc/vhuIVqHo13mjZXfHV4usEXez7ZvnDsNbv6wA=
+github.com/chanxuehong/internal v0.0.0-20180430074813-85d6017afbc4/go.mod h1:G4Uw1UFjRzDVuVpWwOJZoj0DeqP0GKZqU824CzRJM4I=
+github.com/chanxuehong/rand v0.0.0-20180830053958-4b3aff17f488 h1:6d1ijTov542DDRWsFdnPYeGWnlRxlzbpEaJuNJtBQiU=
+github.com/chanxuehong/rand v0.0.0-20180830053958-4b3aff17f488/go.mod h1:h13adSJmQ5tsaV9bR72eTp7ePXJ2WIWyK6heLeietxA=
+github.com/chanxuehong/session v0.0.0-20141231161243-62053c2ee975 h1:2ocvg2LITf46pOMz/lm7iEbFYSozeSJZHWOauAzcxr4=
+github.com/chanxuehong/session v0.0.0-20141231161243-62053c2ee975/go.mod h1:XmZ5cNcHXsI72NpXsFbBDTykojWkDb7zjNyJluAGKMY=
+github.com/chanxuehong/sid v0.0.0-20151130051504-1426da3b0352 h1:1zrSt51Xir+GN8AGjGgc5O21DJGsZJZeN6sybwTL8vA=
+github.com/chanxuehong/sid v0.0.0-20151130051504-1426da3b0352/go.mod h1:q8qN5PJQ4A3mPQlalAN55Ansfsu6l+ofiucgmhC6ZjE=
+github.com/chanxuehong/util v0.0.0-20181116100727-caf892acd09c h1:+bidl2o5S+JFtpiJdUPrgHYE922v3RgHKPqzojUVRyw=
+github.com/chanxuehong/util v0.0.0-20181116100727-caf892acd09c/go.mod h1:oCc2u0egGweOE68RdURGznc2LgbCrdGAAkXOQw2CuNM=
+github.com/chanxuehong/wechat v0.0.0-20190117071504-a30a0cc716fd h1:Ii/j6467o3wTGGhzyMsIyZgYwam7VRpkNwUimpiZjUM=
+github.com/chanxuehong/wechat v0.0.0-20190117071504-a30a0cc716fd/go.mod h1:MIaNMLnYC8S3HpHHzzpOajlZZfMy57dvIMHi3wq1t+8=
+github.com/gorilla/mux v1.7.0 h1:tOSd0UKHQd6urX6ApfOn4XdBMY6Sh1MfxV3kmaazO+U=
+github.com/gorilla/mux v1.7.0/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/lib/pq v1.0.0 h1:X5PMW56eZitiTeO7tKzZxFCSpbFZJtkMMooicw2us9A=
+github.com/lib/pq v1.0.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
