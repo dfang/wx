@@ -61,6 +61,13 @@ var (
 
 	wxMpRedirectURL = os.Getenv("WX_MP_AUTH_REDIRECT_URL")
 
+	// 网页授权域名
+	wxMpAuthDomain = os.Getenv("WX_MP_AUTH_DOMAIN")
+	// JS接口安全域名
+	wxMpJSDomain = os.Getenv("WX_MP_JS_DOMAIN")
+	// 业务域名
+	wxMpBizDomain = os.Getenv("WX_MP_BIZ_DOMAIN")
+
 	wxMpVerifyURL     = os.Getenv("WX_MP_MPVERIFY_URL")
 	wxMpVerifyContent = os.Getenv("WX_MP_MPVERIFY_CONTENT")
 
