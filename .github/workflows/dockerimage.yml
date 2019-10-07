@@ -20,3 +20,5 @@ jobs:
           name: dfang/wx
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          snapshot: true
+          cache: true
