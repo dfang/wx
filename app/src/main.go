@@ -53,18 +53,21 @@ var (
 	wxAppID     = os.Getenv("WX_MP_APPID")
 	wxAppSecret = os.Getenv("WX_MP_APPSECRET")
 
-	wxMpRedirectURL = os.Getenv("WX_MP_AUTH_REDIRECT_URL")
-
-	// 网页授权域名
-	wxMpAuthDomain = os.Getenv("WX_MP_AUTH_DOMAIN")
-	// JS接口安全域名
-	wxMpJSDomain = os.Getenv("WX_MP_JS_DOMAIN")
-	// 业务域名
-	wxMpBizDomain = os.Getenv("WX_MP_BIZ_DOMAIN")
-
+	// 设置网页授权域名，微信需要验证授权域名 （公众号设置 -> 功能设置 -> 网页授权域名)
 	wxMpVerifyURL     = os.Getenv("WX_MP_MPVERIFY_URL")
 	wxMpVerifyContent = os.Getenv("WX_MP_MPVERIFY_CONTENT")
+	// 网页授权域名  只能设置一个 （公众号设置 -> 功能设置)
+	wxMpAuthDomain = os.Getenv("WX_MP_AUTH_DOMAIN")
 
+	// 微信授权之后获取到用户的微信信息了，跳转到哪
+	wxMpRedirectURL = os.Getenv("WX_MP_AUTH_REDIRECT_URL")
+
+	// // JS接口安全域名 可设置多个  （公众号设置 -> 功能设置)
+	// wxMpJSDomain = os.Getenv("WX_MP_JS_DOMAIN")
+	// // 业务域名 可设置多个 （公众号设置 -> 功能设置)
+	// wxMpBizDomain = os.Getenv("WX_MP_BIZ_DOMAIN")
+
+	// 微信支付相关
 	mchID  = os.Getenv("WX_PAY_MCHID")
 	apiKey = os.Getenv("WX_PAY_APIKEY")
 )
