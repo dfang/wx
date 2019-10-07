@@ -14,7 +14,7 @@ import (
 
 // mp.weixin.qq.com 设置授权回调域名
 func mpVerifyHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "YxLL1ZR1olEyFcp0")
+	fmt.Fprintln(w, wxMpVerifyContent)
 }
 
 // SignatureHandler 微信JS SDK生成签名
