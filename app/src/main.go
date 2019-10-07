@@ -60,6 +60,9 @@ var (
 	wxAppID     = os.Getenv("WX_MP_APPID")
 	wxAppSecret = os.Getenv("WX_MP_APPSECRET")
 
+	wxMpVerifyURL     = os.Getenv("WX_MP_MPVERIFY_URL")
+	wxMpVerifyContent = os.Getenv("WX_MP_MPVERIFY_CONTENT")
+
 	mchID  = os.Getenv("WX_PAY_MCHID")
 	apiKey = os.Getenv("WX_PAY_APIKEY")
 )
@@ -76,7 +79,7 @@ type App struct {
 
 // Initialize intialize database, routes
 func (a *App) Initialize(user, password, host, dbName string) {
-	for _, e := range []string{"WX_MP_APPID", "WX_MP_APPSECRET", "WX_PAY_MCHID", "WX_PAY_APIKEY"} {
+	for _, e := range []string{"WX_MP_APPID", "WX_MP_APPSECRET", "WX_MP_MPVERIFY_URL", "WX_MP_MPVERIFY_CONTENT", "WX_PAY_MCHID", "WX_PAY_APIKEY"} {
 		if os.Getenv(e) == "" {
 			log.Fatalf("请正确设置环境变量 \n可以通过hasura secret update来设置 \n 然后在k9s deployment.yaml 通过secretKeyRef读取secret到Docker容器里\n")
 		}
@@ -126,7 +129,7 @@ func (a *App) initializeRoutes() {
 	// 开始请求网页授权
 	r.HandleFunc("/page1", page1Handler)
 	// 获取用户信息然后回调
-	r.HandleFunc("/page2", page2Handler(a.DB))
+	r.HandleFunc("/page2", page2Handler)
 
 	// 生成调用wx jssdk需要的签名等
 	r.HandleFunc("/jssdk_signature", jssdkSignatureHandler)
@@ -139,13 +142,14 @@ func (a *App) initializeRoutes() {
 	// wx.ChooseWxPay成功之后的回调
 	r.HandleFunc("/pay_notify", paymentNotifyHandler)
 
-	// wx.ChooseWxPay 的success callback 最好查询一下
-	r.HandleFunc("/order_query", orderQueryHandler(a.DB))
+	// // wx.ChooseWxPay 的success callback 最好查询一下
+	// r.HandleFunc("/order_query", orderQueryHandler(a.DB))
 
-	r.HandleFunc("/join", referralHandler(a.DB))
+	// r.HandleFunc("/join", referralHandler(a.DB))
 
 	// 公众号设置 -> 功能设置 -> 设置JS接口安全域名 和 网页授权域名 需要的验证
-	r.HandleFunc("/MP_verify_w7yalxZBScxCceA2.txt", mpVerifyHandler)
+	// r.HandleFunc("/MP_verify_w7yalxZBScxCceA2.txt", mpVerifyHandler)
+	r.HandleFunc(wxMpVerifyURL, mpVerifyHandler)
 
 	// r.HandleFunc("/v1/login", loginHandler(a.DB))
 	// r.HandleFunc("/v1/signup", signUpHandler(a.DB))

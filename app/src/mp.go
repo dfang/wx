@@ -5,7 +5,6 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -44,7 +43,7 @@ func page1Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 // 授权后回调页面
-func page2Handler(db *sql.DB) http.HandlerFunc {
+func page2Handler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.RequestURI)
 
@@ -117,43 +116,7 @@ func page2Handler(db *sql.DB) http.HandlerFunc {
 		// json.NewDecoder(r.Body).Decode(&user)
 		// log.Printf("%v", user)
 
-		up := getUserProfileByOpenID(db, userinfo.OpenId)
-		if (up == UserProfile{}) {
-			id := 0
-			sqlStmt2 := `INSERT INTO USER_PROFILES (openid, unionid, nickname, sex, city, province, country, headimgurl)
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id`
-			err := db.QueryRow(sqlStmt2, &userinfo.OpenId, &userinfo.UnionId, &userinfo.Nickname, &userinfo.Sex, &userinfo.City, &userinfo.Province, &userinfo.Country, &userinfo.HeadImageURL).Scan(&id)
-			if err != nil {
-				log.Println(err)
-			}
-			up.ID = id
-			up.Openid = sql.NullString{String: userinfo.OpenId}
-			up.Nickname = sql.NullString{String: userinfo.Nickname}
-			up.Sex = sql.NullInt64{Int64: int64(userinfo.Sex)}
-			up.City = sql.NullString{String: userinfo.City}
-			up.Country = sql.NullString{String: userinfo.Country}
-			up.Unionid = sql.NullString{String: userinfo.UnionId}
-			up.HeadImageURL = sql.NullString{String: userinfo.HeadImageURL}
-			// up.MobilePhone = sql.NullString{String: mobilePhone}
-			// up.HasuraID = sql.NullInt64{Int64: hasuraID}
-			// up.ParentID = sql.NullInt64{Int64: parentID}
-			// up.Qrcode = sql.NullString{String: qrCode}
-			log.Printf("\n\nuserinfo not exists in database, inserted it, id is %d\n\n", up.ID)
-		} else {
-			// UPDATE profile
-			sqlStmt2 := `UPDATE USER_PROFILES
-                    SET nickname=$1, sex=$2, city=$3, province=$4, country=$5, headimgurl=$6
-                    WHERE openid=$7 AND unionid =$8`
-			_, err = db.Exec(sqlStmt2, up.Nickname.String, up.Sex.Int64, up.City.String, up.Province.String, up.Country.String, up.HeadImageURL.String, up.Openid.String, up.Unionid.String)
-			if err != nil {
-				panic(err)
-			}
-			log.Printf("\n\nuserinfo exists in database, id is %d\n\n", up.ID)
-			log.Printf("update it with nickname=%s, sex=%d, city=%s, province=%s, country=%s, headimgurl=%s, openid=%s, unionid=%s\n\n", up.Nickname.String, up.Sex.Int64, up.City.String, up.Province.String, up.Country.String, up.HeadImageURL.String, up.Openid.String, up.Unionid.String)
-		}
-
-		u, _ := json.Marshal(up)
+		u, _ := json.Marshal(userinfo)
 		log.Printf("\n\nuserinfo to be encoded in cookie: %s\n\n", string(u))
 
 		mpCookie := http.Cookie{
