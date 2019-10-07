@@ -84,6 +84,7 @@ var (
 	oauth2Endpoint oauth2.Endpoint = mpoauth2.NewEndpoint(wxAppID, wxAppSecret)
 )
 
+// App app struct
 type App struct {
 	Router *mux.Router
 	DB     *sql.DB
@@ -93,7 +94,7 @@ type App struct {
 func (a *App) Initialize(user, password, host, dbName string) {
 	for _, e := range []string{"WX_MP_APPID", "WX_MP_APPSECRET", "WX_MP_MPVERIFY_URL", "WX_MP_MPVERIFY_CONTENT", "WX_PAY_MCHID", "WX_PAY_APIKEY"} {
 		if os.Getenv(e) == "" {
-			log.Fatalf("请正确设置环境变量 \n可以通过hasura secret update来设置 \n 然后在k9s deployment.yaml 通过secretKeyRef读取secret到Docker容器里\n")
+			log.Fatalf("请正确设置环境变量\n")
 		}
 	}
 
@@ -139,11 +140,18 @@ func (a *App) Initialize(user, password, host, dbName string) {
 func (a *App) initializeRoutes() {
 	r := a.Router
 
+	// 设置网页授权域名 微信需要验证 这个
+	// 公众号设置 -> 功能设置 -> 网页授权域名
+	// r.HandleFunc("/MP_verify_w7yalxZBScxCceA2.txt", mpVerifyHandler)
+	r.HandleFunc(wxMpVerifyURL, mpVerifyHandler)
+
 	// 开始请求网页授权
 	r.HandleFunc("/page1", page1Handler)
 	r.HandleFunc("/auth", page1Handler)
 
-	// 获取用户信息然后回调
+	// 由page1 跳转至此
+	// /page2?code=081cbFCN1twrta131vCN1dFuCN1cbFCh&state=0d4910ba5704d6c37a911fd56af82abb
+	// 获取到用户信息然后跳到回调URL
 	r.HandleFunc("/page2", page2Handler())
 
 	// 生成调用wx jssdk需要的签名等
@@ -161,10 +169,6 @@ func (a *App) initializeRoutes() {
 	// r.HandleFunc("/order_query", orderQueryHandler(a.DB))
 
 	// r.HandleFunc("/join", referralHandler(a.DB))
-
-	// 公众号设置 -> 功能设置 -> 设置JS接口安全域名 和 网页授权域名 需要的验证
-	// r.HandleFunc("/MP_verify_w7yalxZBScxCceA2.txt", mpVerifyHandler)
-	r.HandleFunc(wxMpVerifyURL, mpVerifyHandler)
 
 	// r.HandleFunc("/v1/login", loginHandler(a.DB))
 	// r.HandleFunc("/v1/signup", signUpHandler(a.DB))
