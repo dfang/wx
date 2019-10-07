@@ -138,7 +138,6 @@ func (a *App) initializeRoutes() {
 
 	// 开始请求网页授权
 	r.HandleFunc("/page1", page1Handler)
-
 	r.HandleFunc("/auth", page1Handler)
 
 	// 获取用户信息然后回调
