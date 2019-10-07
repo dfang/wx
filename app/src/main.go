@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -84,40 +83,41 @@ func (a *App) Initialize(user, password, host, dbName string) {
 			log.Fatalf("请正确设置环境变量 \n可以通过hasura secret update来设置 \n 然后在k9s deployment.yaml 通过secretKeyRef读取secret到Docker容器里\n")
 		}
 	}
-	// host = "localhost"
-	// user = "postgres"
-	// password = "postgres"
-	// dbname := "mj"
-	port := 5432
-	user = os.Getenv("POSTGRES_USER")
-	password = os.Getenv("POSTGRES_PASSWORD")
-	host = "postgres.hasura"
-	dbname := "hasuradb"
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+	// // host = "localhost"
+	// // user = "postgres"
+	// // password = "postgres"
+	// // dbname := "mj"
+	// port := 5432
+	// user = os.Getenv("POSTGRES_USER")
+	// password = os.Getenv("POSTGRES_PASSWORD")
+	// host = "postgres.hasura"
+	// dbname := "hasuradb"
 
-	// why parseTime=true
-	// error: "sql: Scan error on column index 7: null: cannot scan type []uint8 into null.Time: [50 48 49 56 45 48 52 45 49 52 32 49 51 58 52 56 58 48 52]"
-	// https://github.com/xo/xo/issues/19
-	// connectionString := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", user, password, host, dbName)
-	log.Printf("connectionString is %s\n", psqlInfo)
+	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	// 	"password=%s dbname=%s sslmode=disable",
+	// 	host, port, user, password, dbname)
 
-	var err error
-	a.DB, err = sql.Open("postgres", psqlInfo)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// // why parseTime=true
+	// // error: "sql: Scan error on column index 7: null: cannot scan type []uint8 into null.Time: [50 48 49 56 45 48 52 45 49 52 32 49 51 58 52 56 58 48 52]"
+	// // https://github.com/xo/xo/issues/19
+	// // connectionString := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", user, password, host, dbName)
+	// log.Printf("connectionString is %s\n", psqlInfo)
 
-	// defer a.DB.Close()
+	// var err error
+	// a.DB, err = sql.Open("postgres", psqlInfo)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	err = a.DB.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// // defer a.DB.Close()
 
-	log.Println("Successfully connected!")
+	// err = a.DB.Ping()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// log.Println("Successfully connected!")
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
@@ -129,7 +129,7 @@ func (a *App) initializeRoutes() {
 	// 开始请求网页授权
 	r.HandleFunc("/page1", page1Handler)
 	// 获取用户信息然后回调
-	r.HandleFunc("/page2", page2Handler)
+	r.HandleFunc("/page2", page2Handler())
 
 	// 生成调用wx jssdk需要的签名等
 	r.HandleFunc("/jssdk_signature", jssdkSignatureHandler)
