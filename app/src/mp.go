@@ -126,7 +126,7 @@ func page2Handler() http.HandlerFunc {
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &mpCookie)
-		http.Redirect(w, r, "https://wx.zhidaikeji.com/#/auth_callback", http.StatusFound)
+		http.Redirect(w, r, wxMpRedirectURL, http.StatusFound)
 		return
 	})
 }

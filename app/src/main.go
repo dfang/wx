@@ -59,6 +59,8 @@ var (
 	wxAppID     = os.Getenv("WX_MP_APPID")
 	wxAppSecret = os.Getenv("WX_MP_APPSECRET")
 
+	wxMpRedirectURL = os.Getenv("WX_MP_AUTH_REDIRECT_URL")
+
 	wxMpVerifyURL     = os.Getenv("WX_MP_MPVERIFY_URL")
 	wxMpVerifyContent = os.Getenv("WX_MP_MPVERIFY_CONTENT")
 
@@ -128,6 +130,9 @@ func (a *App) initializeRoutes() {
 
 	// 开始请求网页授权
 	r.HandleFunc("/page1", page1Handler)
+
+	r.HandleFunc("/auth", page1Handler)
+
 	// 获取用户信息然后回调
 	r.HandleFunc("/page2", page2Handler())
 
