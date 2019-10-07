@@ -13,4 +13,8 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag dfang/wx:$(date +%s) --tag dfang/wx:latest
     - name: Push the Docker image
-      run: docker push dfang/wx:latest
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: dfang/wx:latest
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
