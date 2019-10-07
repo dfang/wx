@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -43,13 +44,6 @@ type signSignatureRequest struct {
 
 //go:generate xo pgsql://@localhost/hasuradb -o models --template-path templates
 
-const (
-	// wxAppID           = "wxb7e6db75bccd7c53"                     // 公众号appID
-	// wxAppSecret       = "67c34a2b5a088330c354ef7ce09ab06a"       // 填上自己的参数
-	oauth2RedirectURI = "https://wechat.wx.zhidaikeji.com/page2" // 填上自己的参数
-	oauth2Scope       = "snsapi_userinfo"                        // 填上自己的参数
-)
-
 // const (
 // // mchID  = "1518844551"                       // 微信支付商户ID
 // // apiKey = "haY7TtuAoLszKsLwhAqPioNvYha53dfa" // 微信支付商户APIKEY
@@ -73,6 +67,13 @@ var (
 
 	mchID  = os.Getenv("WX_PAY_MCHID")
 	apiKey = os.Getenv("WX_PAY_APIKEY")
+)
+
+var (
+	// wxAppID           = "wxb7e6db75bccd7c53"                           // 公众号appID
+	// wxAppSecret       = "67c34a2b5a088330c354ef7ce09ab06a"             // 填上自己的参数
+	oauth2RedirectURI = fmt.Sprintf("https://%s/page2", wxMpAuthDomain) // 填上自己的参数
+	oauth2Scope       = "snsapi_userinfo"                               // 填上自己的参数
 )
 
 var (
