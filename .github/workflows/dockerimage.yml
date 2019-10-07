@@ -11,6 +11,8 @@ jobs:
  
     steps:
       # https://github.com/elgohr/Publish-Docker-Github-Action
+      # https://github.com/marketplace/actions/publish-docker
+      # https://github.com/sdras/awesome-actions#collection-of-actions
       - uses: actions/checkout@master
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@2.2
