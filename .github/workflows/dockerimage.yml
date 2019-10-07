@@ -11,4 +11,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag wx:$(date +%s)
+    - run: docker build . --file Dockerfile --tag dfang/wx:$(date +%s)
+    - push: docker push dfang/wx:$(date +%s)
