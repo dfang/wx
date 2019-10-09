@@ -23,17 +23,14 @@ var (
 
 // WechatMPAuth Auth Provider
 type WechatMPAuth struct {
-	Provider string `json:"provider"`
-	Data     struct {
-		Openid     string `json:"openid"`
-		Unionid    string `json:"unionid"`
-		Nickname   string `json:"nickname"`
-		Sex        int    `json:"sex"`
-		City       string `json:"city"`
-		Province   string `json:"province"`
-		Country    string `json:"country"`
-		Headimgurl string `json:"headimgurl"`
-	} `json:"data"`
+	OpenID     string `json:"openid"`
+	UnionID    string `json:"unionid"`
+	Nickname   string `json:"nickname"`
+	Sex        int    `json:"sex"`
+	City       string `json:"city"`
+	Province   string `json:"province"`
+	Country    string `json:"country"`
+	Headimgurl string `json:"headimgurl"`
 }
 
 type signSignatureRequest struct {
@@ -92,46 +89,51 @@ type App struct {
 
 // Initialize intialize database, routes
 func (a *App) Initialize(user, password, host, dbName string) {
-	for _, e := range []string{"WX_MP_APPID", "WX_MP_APPSECRET", "WX_MP_MPVERIFY_URL", "WX_MP_MPVERIFY_CONTENT", "WX_PAY_MCHID", "WX_PAY_APIKEY"} {
+	for _, e := range []string{
+		"WX_MP_APPID", "WX_MP_APPSECRET",
+		"WX_MP_MPVERIFY_URL", "WX_MP_MPVERIFY_CONTENT",
+		"WX_PAY_MCHID", "WX_PAY_APIKEY",
+		"POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST", "POSTGRES_PORT", "POSTGRES_DBNAME",
+	} {
 		if os.Getenv(e) == "" {
 			log.Fatalf("请正确设置环境变量\n")
 		}
 	}
 
-	// // host = "localhost"
-	// // user = "postgres"
-	// // password = "postgres"
-	// // dbname := "mj"
-	// port := 5432
-	// user = os.Getenv("POSTGRES_USER")
-	// password = os.Getenv("POSTGRES_PASSWORD")
-	// host = "postgres.hasura"
-	// dbname := "hasuradb"
+	// host = "localhost"
+	// user = "postgres"
+	// password = "postgres"
+	// dbname := "mj"
+	user = os.Getenv("POSTGRES_USER")
+	password = os.Getenv("POSTGRES_PASSWORD")
+	host = os.Getenv("POSTGRES_HOST")
+	port := os.Getenv("POSTGRES_PORT")
+	dbname := os.Getenv("POSTGRES_DBNAME")
 
-	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	// 	"password=%s dbname=%s sslmode=disable",
-	// 	host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
 
-	// // why parseTime=true
-	// // error: "sql: Scan error on column index 7: null: cannot scan type []uint8 into null.Time: [50 48 49 56 45 48 52 45 49 52 32 49 51 58 52 56 58 48 52]"
-	// // https://github.com/xo/xo/issues/19
-	// // connectionString := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", user, password, host, dbName)
-	// log.Printf("connectionString is %s\n", psqlInfo)
+	// why parseTime=true
+	// error: "sql: Scan error on column index 7: null: cannot scan type []uint8 into null.Time: [50 48 49 56 45 48 52 45 49 52 32 49 51 58 52 56 58 48 52]"
+	// https://github.com/xo/xo/issues/19
+	// connectionString := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", user, password, host, dbName)
+	log.Printf("connectionString is %s\n", psqlInfo)
 
-	// var err error
-	// a.DB, err = sql.Open("postgres", psqlInfo)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	var err error
+	a.DB, err = sql.Open("postgres", psqlInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// // defer a.DB.Close()
+	// defer a.DB.Close()
 
-	// err = a.DB.Ping()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	err = a.DB.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// log.Println("Successfully connected!")
+	log.Println("Successfully connected!")
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
@@ -153,6 +155,8 @@ func (a *App) initializeRoutes() {
 	// /page2?code=081cbFCN1twrta131vCN1dFuCN1cbFCh&state=0d4910ba5704d6c37a911fd56af82abb
 	// 获取到用户信息然后跳到回调URL
 	r.HandleFunc("/page2", page2Handler())
+
+	r.HandleFunc("/auth_callback", loginHandler(a.DB))
 
 	// 生成调用wx jssdk需要的签名等
 	r.HandleFunc("/jssdk_signature", jssdkSignatureHandler)
@@ -180,4 +184,11 @@ func main() {
 
 	log.Printf("listening on port %s", *flagPort)
 	log.Fatal(http.ListenAndServe(":"+*flagPort, a.Router))
+}
+
+type AuthInfo struct {
+	WechatMPAuth
+
+	MobilePhone string `json:"mobile_phone"`
+	UserID      string `json:"user_id"`
 }

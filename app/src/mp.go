@@ -141,6 +141,7 @@ func page2Handler() http.HandlerFunc {
 
 // 	return json.Marshal(&struct {
 // 		Openid     string `json:"openid"`
+// 		Unionid     string `json:"unionid"`
 // 		Nickname   string `json:"nickname"`
 // 		Sex        int    `json:"sex"`
 // 		City       string `json:"city"`

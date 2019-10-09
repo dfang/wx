@@ -19,3 +19,7 @@ https://wx.example.com/jssdk_signature
 
 开始网页授权   
 https://wx.example.com/auth
+
+\rsync -avP . aliyun.zdp:~/xsjd
+
+docker-compose up
