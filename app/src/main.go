@@ -72,8 +72,8 @@ var (
 var (
 	// wxAppID           = "wxb7e6db75bccd7c53"                           // 公众号appID
 	// wxAppSecret       = "67c34a2b5a088330c354ef7ce09ab06a"             // 填上自己的参数
-	oauth2RedirectURI = fmt.Sprintf("/%s/page2", wxMpAuthDomain) // 填上自己的参数
-	oauth2Scope       = "snsapi_userinfo"                        // 填上自己的参数
+	oauth2RedirectURI = fmt.Sprintf("http://%s/page2", wxMpAuthDomain) // 填上自己的参数
+	oauth2Scope       = "snsapi_userinfo"                              // 填上自己的参数
 )
 
 var (
