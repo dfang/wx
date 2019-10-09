@@ -76,6 +76,7 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		if mobile == "" {
 			// redirect to bind mobile phone page
 			http.Redirect(w, r, "http://mp.xsjd123.com/#/pages/bindPhone/index", http.StatusUnauthorized)
+			return
 		}
 
 		userID := 0

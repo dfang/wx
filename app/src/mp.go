@@ -122,7 +122,7 @@ func page2Handler() http.HandlerFunc {
 		mpCookie := http.Cookie{
 			Name:     "u",
 			Value:    base64.StdEncoding.EncodeToString(u),
-			Domain:   wxMpAuthDomain,
+			Domain:   "*.xsjd123.com",
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &mpCookie)
