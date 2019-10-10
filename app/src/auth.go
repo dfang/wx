@@ -39,14 +39,11 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		user := WechatMPAuth{}
 		err = json.Unmarshal([]byte(sDec), &user)
 		// json.NewDecoder(r.Body).Decode(&user)
-		log.Printf("cookie decoded as string: %v", user)
+		log.Printf("cookie decoded as string: %+v", user)
 
 		sqlStmt := `SELECT ID FROM WECHAT_PROFILES WHERE UNIONID=$1`
 		id := 0
 		err = db.QueryRow(sqlStmt, &user.UnionID).Scan(&id)
-		if err != nil {
-			log.Println(err)
-		}
 		switch err {
 		case sql.ErrNoRows:
 			fmt.Println("No rows were returned!")
@@ -68,7 +65,8 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 
 		var mobile sql.NullString
 		sqlStmt3 := `SELECT mobile_phone FROM WECHAT_PROFILES WHERE UNIONID=$1`
-		err = db.QueryRow(sqlStmt3, &user.UnionID).Scan(&mobile)
+		fmt.Printf("SELECT mobile_phone FROM WECHAT_PROFILES WHERE UNIONID=%s\n", user.UnionID)
+		err = db.QueryRow(sqlStmt3, user.UnionID).Scan(&mobile)
 		// sql: Scan error on column index 0, name "mobile_phone": unsupported Scan, storing driver.Value type <nil> into type *string
 		if err != nil {
 			log.Println(err)
@@ -81,9 +79,9 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		var userID sql.NullInt64
-
 		sqlStmt4 := `SELECT id FROM users WHERE mobile_phone=$1`
-		err = db.QueryRow(sqlStmt4, &user.UnionID).Scan(&userID)
+		fmt.Printf("SELECT id FROM users WHERE mobile_phone=%s\n", mobile.String)
+		err = db.QueryRow(sqlStmt4, mobile.String).Scan(&userID)
 		if err != nil {
 			log.Println(err)
 		}
