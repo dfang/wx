@@ -66,12 +66,15 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			log.Println(err)
 		}
 
-		mobile := ""
+		var mobile sql.NullString
 		sqlStmt3 := `SELECT mobile_phone FROM WECHAT_PROFILES WHERE UNIONID=$1`
 		err = db.QueryRow(sqlStmt3, &user.UnionID).Scan(&mobile)
 		// sql: Scan error on column index 0, name "mobile_phone": unsupported Scan, storing driver.Value type <nil> into type *string
 		if err != nil {
 			log.Println(err)
+		}
+
+		if !mobile.Valid {
 			// redirect to bind mobile phone page
 			http.Redirect(w, r, "http://mp.xsjd123.com/#/pages/bindPhone/index", http.StatusUnauthorized)
 			return
@@ -86,7 +89,7 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 
 		au := AuthInfo{
 			WechatMPAuth: user,
-			MobilePhone:  mobile,
+			MobilePhone:  mobile.String,
 			UserID:       strconv.Itoa(userID),
 		}
 
