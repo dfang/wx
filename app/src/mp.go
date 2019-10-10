@@ -123,6 +123,10 @@ func page2Handler() http.HandlerFunc {
 			Name:  "u",
 			Value: base64.StdEncoding.EncodeToString(u),
 			// Domain:   "xsjd123.com",
+			// Defaults to host-only, which means exact subdomain
+			// matching. Only change this to enable subdomains if you
+			// need to! The below code would work on any subdomain for
+			// yoursite.com
 			Domain:   cookieDomain,
 			HttpOnly: false,
 		}

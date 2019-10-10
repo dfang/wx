@@ -39,7 +39,7 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		user := WechatMPAuth{}
 		err = json.Unmarshal([]byte(sDec), &user)
 		// json.NewDecoder(r.Body).Decode(&user)
-		log.Printf("%v", user)
+		log.Printf("cookie decoded as string: %v", user)
 
 		sqlStmt := `SELECT ID FROM WECHAT_PROFILES WHERE UNIONID=$1`
 		id := 0
@@ -69,11 +69,9 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		mobile := ""
 		sqlStmt3 := `SELECT mobile_phone FROM WECHAT_PROFILES WHERE UNIONID=$1`
 		err = db.QueryRow(sqlStmt3, &user.UnionID).Scan(&mobile)
+		// sql: Scan error on column index 0, name "mobile_phone": unsupported Scan, storing driver.Value type <nil> into type *string
 		if err != nil {
 			log.Println(err)
-		}
-
-		if mobile == "" {
 			// redirect to bind mobile phone page
 			http.Redirect(w, r, "http://mp.xsjd123.com/#/pages/bindPhone/index", http.StatusUnauthorized)
 			return
