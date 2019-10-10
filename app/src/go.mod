@@ -8,6 +8,7 @@ require (
 	github.com/chanxuehong/wechat v0.0.0-20190117071504-a30a0cc716fd
 	github.com/gorilla/mux v1.7.0
 	github.com/lib/pq v1.0.0
+	github.com/rs/cors v1.7.0
 )
 
 go 1.13

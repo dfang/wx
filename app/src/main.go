@@ -14,6 +14,8 @@ import (
 	mpoauth2 "github.com/chanxuehong/wechat/mp/oauth2"
 	"github.com/chanxuehong/wechat/oauth2"
 	"github.com/gorilla/mux"
+
+	"github.com/rs/cors"
 )
 
 var (
@@ -186,7 +188,16 @@ func main() {
 	a.Initialize(os.Getenv("APP_DB_USER"), os.Getenv("APP_DB_PASSWORD"), os.Getenv("APP_DB_HOST"), os.Getenv("APP_DB_NAME"))
 
 	log.Printf("listening on port %s", *flagPort)
-	log.Fatal(http.ListenAndServe(":"+*flagPort, a.Router))
+
+	// cors.Default() setup the middleware with default options being
+	// all origins accepted with simple methods (GET, POST). See
+	// documentation below for more options.
+	// handler := cors.Default().Handler(mux)
+	// log.Fatal(http.ListenAndServe(":"+*flagPort, a.Router))
+
+	handler := cors.Default().Handler(a.Router)
+	// https://github.com/rs/cors
+	log.Fatal(http.ListenAndServe(":"+*flagPort, handler))
 }
 
 type AuthInfo struct {

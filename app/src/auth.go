@@ -152,7 +152,9 @@ func bindPhoneHandler(db *sql.DB) http.HandlerFunc {
 		}
 		fmt.Println(count)
 
-		http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("{\"status\": \"ok\"}"))
+		// http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
 		return
 	})
 }
