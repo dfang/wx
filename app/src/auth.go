@@ -78,6 +78,8 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		fmt.Println("moible_phone: ", mobile.String)
+
 		var userID sql.NullInt64
 		sqlStmt4 := `SELECT id FROM users WHERE mobile_phone=$1`
 		fmt.Printf("SELECT id FROM users WHERE mobile_phone=%s\n", mobile.String)
@@ -91,6 +93,8 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			w.Write([]byte(`请联系客客服申请售后资质`))
 			return
 		}
+
+		fmt.Println("user_id: ", userID.Int64)
 
 		au := AuthInfo{
 			WechatMPAuth: user,
@@ -114,7 +118,7 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &auCookie)
-		http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
+		http.Redirect(w, r, "http://mp.xsjd123.com/", http.StatusFound)
 		return
 	})
 }
