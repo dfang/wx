@@ -120,9 +120,10 @@ func page2Handler() http.HandlerFunc {
 		log.Printf("\n\nuserinfo to be encoded in cookie: %s\n\n", string(u))
 
 		mpCookie := http.Cookie{
-			Name:     "u",
-			Value:    base64.StdEncoding.EncodeToString(u),
-			Domain:   ".xsjd123.com",
+			Name:  "u",
+			Value: base64.StdEncoding.EncodeToString(u),
+			// Domain:   "xsjd123.com",
+			Domain:   cookieDomain,
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &mpCookie)

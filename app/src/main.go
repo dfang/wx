@@ -67,6 +67,8 @@ var (
 	// 微信支付相关
 	mchID  = os.Getenv("WX_PAY_MCHID")
 	apiKey = os.Getenv("WX_PAY_APIKEY")
+
+	cookieDomain = os.Getenv("WX_MP_COOKIE_DOMAIN")
 )
 
 var (
