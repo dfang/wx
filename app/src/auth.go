@@ -80,17 +80,24 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		userID := 0
+		var userID sql.NullInt64
+
 		sqlStmt4 := `SELECT id FROM users WHERE mobile_phone=$1`
 		err = db.QueryRow(sqlStmt4, &user.UnionID).Scan(&userID)
 		if err != nil {
 			log.Println(err)
 		}
 
+		if !userID.Valid {
+			// http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
+			w.Write([]byte(`请联系客客服申请售后资质`))
+			return
+		}
+
 		au := AuthInfo{
 			WechatMPAuth: user,
 			MobilePhone:  mobile.String,
-			UserID:       strconv.Itoa(userID),
+			UserID:       strconv.FormatInt(userID.Int64, 10),
 		}
 
 		// json.NewEncoder(w).Encode(struct {
@@ -109,7 +116,43 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &auCookie)
-		http.Redirect(w, r, "/xxxxx", http.StatusFound)
+		http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
+		return
+	})
+}
+
+// try to implement custom auth provider
+func bindPhoneHandler(db *sql.DB) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// 绑定手机号码
+
+		mobilePhone := r.PostFormValue("mobile_phone")
+		cookieValue := r.PostFormValue("cookie")
+
+		// Base64 Standard Decoding
+		sDec, err := base64.StdEncoding.DecodeString(cookieValue)
+		if err != nil {
+			fmt.Printf("Error decoding string: %s ", err.Error())
+			return
+		}
+
+		user := WechatMPAuth{}
+		err = json.Unmarshal([]byte(sDec), &user)
+		// json.NewDecoder(r.Body).Decode(&user)
+		log.Printf("cookie decoded as string: %v", user)
+
+		sqlStmt3 := `UPDATE WECHAT_PROFILES SET MOBILE_PHONE=$1 WHERE UNIONID=$2`
+		res, err := db.Exec(sqlStmt3, mobilePhone, user.UnionID)
+		if err != nil {
+			panic(err)
+		}
+		count, err := res.RowsAffected()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(count)
+
+		http.Redirect(w, r, "http://mp.xjsd123.com/", http.StatusFound)
 		return
 	})
 }

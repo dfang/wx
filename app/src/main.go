@@ -159,6 +159,7 @@ func (a *App) initializeRoutes() {
 	r.HandleFunc("/page2", page2Handler())
 
 	r.HandleFunc("/auth_callback", loginHandler(a.DB))
+	r.HandleFunc("/auth_callback", bindPhoneHandler(a.DB))
 
 	// 生成调用wx jssdk需要的签名等
 	r.HandleFunc("/jssdk_signature", jssdkSignatureHandler)
