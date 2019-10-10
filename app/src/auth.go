@@ -124,10 +124,37 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 // try to implement custom auth provider
 func bindPhoneHandler(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// https://stackoverflow.com/questions/15672556/handling-json-post-request-in-go
 		// 绑定手机号码
+		d := json.NewDecoder(r.Body)
+		d.DisallowUnknownFields() // catch unwanted fields
+		// anonymous struct type: handy for one-time use
+		t := struct {
+			MobilePhone *string `json:"mobile_phone"` // pointer so we can test for field absence
+			CookieValue *string `json:"cookie"`
+		}{}
+		err := d.Decode(&t)
+		if err != nil {
+			// bad JSON or unrecognized json field
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
-		mobilePhone := r.PostFormValue("mobile_phone")
-		cookieValue := r.PostFormValue("cookie")
+		if t.MobilePhone == nil {
+			http.Error(w, "missing field 'mobile_phone' from JSON object", http.StatusBadRequest)
+			return
+		}
+
+		if t.CookieValue == nil {
+			http.Error(w, "missing field 'cookie' from JSON object", http.StatusBadRequest)
+			return
+		}
+
+		// mobilePhone := r.PostFormValue("mobile_phone")
+		// cookieValue := r.PostFormValue("cookie")
+
+		mobilePhone := *t.MobilePhone
+		cookieValue := *t.CookieValue
 
 		// Base64 Standard Decoding
 		sDec, err := base64.StdEncoding.DecodeString(cookieValue)
