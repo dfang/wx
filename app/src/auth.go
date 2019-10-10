@@ -126,6 +126,9 @@ func bindPhoneHandler(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// https://stackoverflow.com/questions/15672556/handling-json-post-request-in-go
 		// 绑定手机号码
+
+		DumpHTTPRequest(r)
+
 		d := json.NewDecoder(r.Body)
 		d.DisallowUnknownFields() // catch unwanted fields
 		// anonymous struct type: handy for one-time use
