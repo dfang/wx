@@ -112,7 +112,7 @@ func loginHandler(db *sql.DB) http.HandlerFunc {
 		auCookie := http.Cookie{
 			Name:     "i",
 			Value:    base64.StdEncoding.EncodeToString(by),
-			Domain:   wxMpAuthDomain,
+			Domain:   "xsjd123.com",
 			HttpOnly: false,
 		}
 		http.SetCookie(w, &auCookie)
