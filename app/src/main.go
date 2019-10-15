@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/chanxuehong/session"
+	"github.com/chanxuehong/wechat/mp/core"
 	mpoauth2 "github.com/chanxuehong/wechat/mp/oauth2"
 	"github.com/chanxuehong/wechat/oauth2"
 	"github.com/gorilla/mux"
@@ -71,6 +72,9 @@ var (
 	apiKey = os.Getenv("WX_PAY_APIKEY")
 
 	cookieDomain = os.Getenv("WX_MP_COOKIE_DOMAIN")
+
+	accessTokenServer core.AccessTokenServer = core.NewDefaultAccessTokenServer(wxAppID, wxAppSecret, nil)
+	// wechatClient      *core.Client           = core.NewClient(accessTokenServer, nil)
 )
 
 var (
@@ -159,6 +163,9 @@ func (a *App) initializeRoutes() {
 	// /page2?code=081cbFCN1twrta131vCN1dFuCN1cbFCh&state=0d4910ba5704d6c37a911fd56af82abb
 	// 获取到用户信息然后跳到回调URL
 	r.HandleFunc("/page2", page2Handler())
+
+	// 返回 中控服务器缓存的 accessToken
+	r.HandleFunc("/access_token", accessTokenHandler)
 
 	r.HandleFunc("/auth_callback", loginHandler(a.DB))
 	r.HandleFunc("/bindPhone", bindPhoneHandler(a.DB))

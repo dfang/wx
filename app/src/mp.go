@@ -136,6 +136,25 @@ func page2Handler() http.HandlerFunc {
 	})
 }
 
+func accessTokenHandler(w http.ResponseWriter, r *http.Request) {
+	tkn, err := accessTokenServer.Token()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+
+	json.NewEncoder(w).Encode(struct {
+		Token string
+	}{
+		Token: tkn,
+	})
+	// return
+}
+
 // type UserProfile struct {
 // 	UserInfo *mpoauth2.UserInfo `json:",omitempty"`
 // 	ID       int64              `json:",omitempty"`
