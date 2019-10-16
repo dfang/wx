@@ -148,7 +148,7 @@ func accessTokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 
 	json.NewEncoder(w).Encode(struct {
-		Token string
+		Token string `json:"token"`
 	}{
 		Token: tkn,
 	})
