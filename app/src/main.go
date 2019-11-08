@@ -75,6 +75,10 @@ var (
 
 	accessTokenServer core.AccessTokenServer = core.NewDefaultAccessTokenServer(wxAppID, wxAppSecret, nil)
 	// wechatClient      *core.Client           = core.NewClient(accessTokenServer, nil)
+
+	// 小程序
+	weappID     = os.Getenv("WEAPP_APP_ID")
+	weappSecret = os.Getenv("WEAPP_APP_SECRET")
 )
 
 var (
@@ -188,6 +192,8 @@ func (a *App) initializeRoutes() {
 
 	// r.HandleFunc("/v1/login", loginHandler(a.DB))
 	// r.HandleFunc("/v1/signup", signUpHandler(a.DB))
+
+	r.HandleFunc("/code2session", code2SessionHandler)
 }
 
 func main() {
